@@ -5,7 +5,7 @@ import torch
 from torch.utils.data import Dataset
 from torchvision.transforms import Normalize
 
-from pare.utils.image_utils import batch_crop_opencv_affine
+from hybrik.utils.image_utils import batch_crop_opencv_affine
 
 
 class SSP3DEvalDataset(Dataset):
