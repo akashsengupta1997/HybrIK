@@ -65,7 +65,7 @@ def evaluate_3dpw(model,
     cam_per_frame = []
 
 
-    renderer = Renderer(model_cfg, faces=smpl_neutral.faces, img_res=vis_img_wh)
+    renderer = Renderer(img_res=vis_img_wh, faces=smpl_neutral.faces)
     reposed_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., -0.2]),
                                                                    focal_length=model_cfg.DATASET.FOCAL_LENGTH,
                                                                    resolution=vis_img_wh)
@@ -257,28 +257,23 @@ def evaluate_3dpw(model,
             # Render predicted meshes
             body_vis_rgb_mode = renderer(vertices=pred_vertices[0],
                                          camera_translation=pred_cam_t.copy(),
-                                         image=vis_img[0],
-                                         unnormalise_img=False)
+                                         image=vis_img[0])
             body_vis_rgb_mode_rot = renderer(vertices=pred_vertices[0],
                                              camera_translation=pred_cam_t.copy() if not extreme_crop else rot_cam_t.copy(),
                                              image=np.zeros_like(vis_img[0]),
-                                             unnormalise_img=False,
                                              angle=np.pi / 2.,
                                              axis=[0., 1., 0.])
 
             reposed_body_vis_rgb_mean = renderer(vertices=pred_reposed_vertices[0],
                                                  camera_translation=reposed_cam_t.copy(),
                                                  image=np.zeros_like(vis_img[0]),
-                                                 unnormalise_img=False,
                                                  flip_updown=False)
             reposed_body_vis_rgb_mean_rot = renderer(vertices=pred_reposed_vertices[0],
                                                      camera_translation=reposed_cam_t.copy(),
                                                      image=np.zeros_like(vis_img[0]),
-                                                     unnormalise_img=False,
                                                      angle=np.pi / 2.,
                                                      axis=[0., 1., 0.],
                                                      flip_updown=False)
-
 
             # ------------------ Model Prediction, Error and Uncertainty Figure ------------------
             num_row = 6
