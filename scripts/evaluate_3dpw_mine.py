@@ -542,7 +542,7 @@ def evaluate_3dpw(model,
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--checkpoint', type=str, default='./pretrained_w_cam.pth', help='Path to pretrained model checkpoint')
-    parser.add_argument('--model_cfg', type=str, default='configs/256x192_adam_lr1e-3-hrw48_cam_2x_w_pw3d_3dhp')
+    parser.add_argument('--model_cfg', type=str, default='configs/256x192_adam_lr1e-3-hrw48_cam_2x_w_pw3d_3dhp.yaml')
     parser.add_argument('--gpu', default='0', type=str, help='GPU')
     parser.add_argument('--use_subset', '-S', action='store_true')
     parser.add_argument('--extreme_crop', '-C', action='store_true')
