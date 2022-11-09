@@ -67,11 +67,11 @@ def evaluate_3dpw(model,
 
     renderer = Renderer(img_res=vis_img_wh, faces=smpl_neutral.faces)
     reposed_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., -0.2]),
-                                                                   focal_length=model_cfg.MODEL.FOCAL_LENGTH,
+                                                                   focal_length=5000.,
                                                                    resolution=vis_img_wh)
     if extreme_crop:
         rot_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., 0.]),
-                                                                   focal_length=model_cfg.MODEL.FOCAL_LENGTH,
+                                                                   focal_length=5000.,
                                                                    resolution=vis_img_wh)
 
     model.eval()
@@ -112,10 +112,32 @@ def evaluate_3dpw(model,
 
         # ------------------------------- PREDICTIONS -------------------------------
         out = model(input)
-        for key in out:
-            print(key, out[key].shape)
-        pred_cam_wp = torch.cat([out.cam_scale * 2, out.cam_trans], axis=-1)
-        print(pred_cam_wp.shape)
+        # for key in out:
+        #     print(key, out[key].shape)
+        """
+        out contains
+        pred_phi torch.Size([1, 23, 2])
+        pred_delta_shape torch.Size([1, 10])
+        pred_shape torch.Size([1, 10])
+        pred_theta_mats torch.Size([1, 24, 3, 3])
+        pred_uvd_jts torch.Size([1, 87])
+        pred_xyz_jts_29 torch.Size([1, 87])
+        pred_xyz_jts_24 torch.Size([1, 72])
+        pred_xyz_jts_24_struct torch.Size([1, 72])
+        pred_xyz_jts_17 torch.Size([1, 51])
+        pred_vertices torch.Size([1, 6890, 3])
+        maxvals torch.Size([1, 29, 1])
+        cam_scale torch.Size([1, 1])
+        cam_trans torch.Size([1, 2])
+        cam_root torch.Size([1, 3])
+        transl torch.Size([1, 3])
+        pred_camera torch.Size([1, 1])
+        sigma torch.Size([1, 29, 1])
+        scores torch.Size([1, 29, 1])
+        img_feat torch.Size([1, 2048])
+
+        """
+        pred_cam_wp = torch.cat([out.cam_scale * 2, out.cam_trans], axis=-1)  # TODO camera doesn't work like that, need to use their own code probably
         pred_pose_rotmats = out.pred_theta_mats
         pred_shape = out.pred_shape
 

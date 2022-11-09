@@ -312,7 +312,6 @@ class HRNetSMPLCam(nn.Module):
             camera_root = pred_xyz_jts_29[:, 0, :] * self.depth_factor
             camera_root[:, 2] += camDepth[:, 0, 0]
         camTrans = camera_root.squeeze(dim=1)[:, :2]
-        print('HERE', camScale.shape, camTrans.shape, camera_root.shape)
 
         # if not self.training:
         pred_xyz_jts_29 = pred_xyz_jts_29 - pred_xyz_jts_29[:, [0]]
@@ -335,7 +334,6 @@ class HRNetSMPLCam(nn.Module):
         pred_xyz_jts_17 = output.joints_from_verts.float() / self.depth_factor
         # pred_theta_mats = output.rot_mats.float().reshape(batch_size, 24 * 4)
         pred_theta_mats = output.rot_mats.float()
-        print('HERE', pred_theta_mats.shape)
         pred_xyz_jts_24 = pred_xyz_jts_29[:, :24, :].reshape(batch_size, 72)
         pred_xyz_jts_24_struct = pred_xyz_jts_24_struct.reshape(batch_size, 72)
         pred_xyz_jts_17_flat = pred_xyz_jts_17.reshape(batch_size, 17 * 3)
