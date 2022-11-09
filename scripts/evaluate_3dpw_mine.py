@@ -114,7 +114,7 @@ def evaluate_3dpw(model,
         out = model(input)
         for key in out:
             print(key, out[key].shape)
-        pred_cam_wp = torch.cat([out.cam_scale, out.cam_trans], axis=-1)
+        pred_cam_wp = torch.cat([out.cam_scale * 2, out.cam_trans], axis=-1)
         print(pred_cam_wp.shape)
         pred_pose_rotmats = out.pred_theta_mats
         pred_shape = out.pred_shape
