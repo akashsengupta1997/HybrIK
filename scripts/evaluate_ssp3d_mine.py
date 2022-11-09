@@ -523,7 +523,7 @@ if __name__ == '__main__':
     # Setup evaluation dataset
     dataset_path = '/scratch/as2562/datasets/ssp_3d'
     dataset = SSP3DEvalDataset(dataset_path,
-                               img_wh=model_cfg.DATASET.IMG_RES,
+                               img_wh=model_cfg.MODEL.IMAGE_SIZE,
                                extreme_crop=args.extreme_crop,
                                extreme_crop_scale=args.extreme_crop_scale)
     print("Eval examples found:", len(dataset))
