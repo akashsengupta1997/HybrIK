@@ -211,24 +211,20 @@ def evaluate_ssp3d(model,
             # Render predicted meshes
             body_vis_rgb_mode = renderer(vertices=pred_vertices[0],
                                          camera_translation=pred_cam_t.copy(),
-                                         image=vis_img[0],
-                                         unnormalise_img=False)
+                                         image=vis_img[0])
             body_vis_rgb_mode_rot = renderer(vertices=pred_vertices[0],
                                              camera_translation=pred_cam_t.copy() if not extreme_crop else rot_cam_t.copy(),
                                              image=np.zeros_like(vis_img[0]),
-                                             unnormalise_img=False,
                                              angle=np.pi / 2.,
                                              axis=[0., 1., 0.])
 
             reposed_body_vis_rgb_mean = renderer(vertices=pred_reposed_vertices[0],
                                                  camera_translation=reposed_cam_t.copy(),
                                                  image=np.zeros_like(vis_img[0]),
-                                                 unnormalise_img=False,
                                                  flip_updown=False)
             reposed_body_vis_rgb_mean_rot = renderer(vertices=pred_reposed_vertices[0],
                                                      camera_translation=reposed_cam_t.copy(),
                                                      image=np.zeros_like(vis_img[0]),
-                                                     unnormalise_img=False,
                                                      angle=np.pi / 2.,
                                                      axis=[0., 1., 0.],
                                                      flip_updown=False)
