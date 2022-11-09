@@ -537,7 +537,7 @@ if __name__ == '__main__':
     # metrics.append('silhouette_ious')
     # metrics.append('silhouettesamples_ious')
 
-    save_path = '/scratch3/as2562/PARE/evaluations/ssp3d'
+    save_path = '/scratch3/as2562/HybrIK/evaluations/ssp3d'
     if args.extreme_crop:
         save_path += '_extreme_crop_scale_{}'.format(args.extreme_crop_scale)
     if not os.path.exists(save_path):
