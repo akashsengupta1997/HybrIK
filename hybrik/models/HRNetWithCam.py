@@ -273,7 +273,7 @@ class HRNetSMPLCam(nn.Module):
             sigma = (sigma + flip_sigma) / 2
 
         camScale = pred_camera[:, :1].unsqueeze(1)
-        # camTrans = pred_camera[:, 1:].unsqueeze(1)
+        camTrans = pred_camera[:, 1:].unsqueeze(1)
 
         camDepth = self.focal_length / (self.input_size * camScale + 1e-9)
 
@@ -311,7 +311,8 @@ class HRNetSMPLCam(nn.Module):
 
             camera_root = pred_xyz_jts_29[:, 0, :] * self.depth_factor
             camera_root[:, 2] += camDepth[:, 0, 0]
-        # camTrans = camera_root.squeeze(dim=1)[:, :2]
+        camTrans = camera_root.squeeze(dim=1)[:, :2]
+        print('HERE', camScale.shape, camTrans.shape)
 
         # if not self.training:
         pred_xyz_jts_29 = pred_xyz_jts_29 - pred_xyz_jts_29[:, [0]]
@@ -354,7 +355,7 @@ class HRNetSMPLCam(nn.Module):
             pred_vertices=pred_vertices,
             maxvals=maxvals,
             cam_scale=camScale[:, 0],
-            # cam_trans=camTrans[:, 0],
+            cam_trans=camTrans[:, 0],
             cam_root=camera_root,
             transl=transl,
             pred_camera=pred_camera,
