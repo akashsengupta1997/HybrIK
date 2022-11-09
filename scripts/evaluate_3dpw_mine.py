@@ -67,11 +67,11 @@ def evaluate_3dpw(model,
 
     renderer = Renderer(img_res=vis_img_wh, faces=smpl_neutral.faces)
     reposed_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., -0.2]),
-                                                                   focal_length=model_cfg.DATASET.FOCAL_LENGTH,
+                                                                   focal_length=model_cfg.MODEL.FOCAL_LENGTH,
                                                                    resolution=vis_img_wh)
     if extreme_crop:
         rot_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., 0.]),
-                                                                   focal_length=model_cfg.DATASET.FOCAL_LENGTH,
+                                                                   focal_length=model_cfg.MODEL.FOCAL_LENGTH,
                                                                    resolution=vis_img_wh)
 
     model.eval()
@@ -252,7 +252,7 @@ def evaluate_3dpw(model,
             # pred_cam_t = out['pred_cam_t'][0, 0, :].cpu().detach().numpy()
             pred_cam_t = torch.stack([pred_cam_wp[0, 1],
                                       pred_cam_wp[0, 2],
-                                      2 * model_cfg.DATASET.FOCAL_LENGTH / (vis_img_wh * pred_cam_wp[0, 0] + 1e-9)], dim=-1).cpu().detach().numpy()
+                                      2 * model_cfg.MODEL.FOCAL_LENGTH / (vis_img_wh * pred_cam_wp[0, 0] + 1e-9)], dim=-1).cpu().detach().numpy()
 
             # Render predicted meshes
             body_vis_rgb_mode = renderer(vertices=pred_vertices[0],
@@ -583,7 +583,7 @@ if __name__ == '__main__':
     # vis_every_n_batches=None
     dataset_path = '/scratches/nazgul_2/as2562/datasets/3DPW/test'
     dataset = PW3DEvalDataset(dataset_path,
-                              img_wh=model_cfg.DATASET.IMG_RES,
+                              img_wh=model_cfg.MODEL.IMAGE_SIZE[0],
                               selected_fnames=selected_fnames,
                               visible_joints_threshold=vis_joints_threshold,
                               gt_visible_joints_threhshold=0.6,
