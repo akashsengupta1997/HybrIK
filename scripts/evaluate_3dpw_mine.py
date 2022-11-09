@@ -113,7 +113,7 @@ def evaluate_3dpw(model,
         # ------------------------------- PREDICTIONS -------------------------------
         out = model(input)
         for key in out:
-            print(out[key].shape)
+            print(key, out[key].shape)
         pred_cam_wp = out.pred_camera
         pred_pose_rotmats = out.pred_theta_mats
         pred_shape = out.pred_shape
