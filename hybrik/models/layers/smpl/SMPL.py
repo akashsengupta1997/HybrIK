@@ -260,7 +260,7 @@ class SMPL_layer(nn.Module):
             self.lbs_weights, dtype=self.dtype, train=self.training,
             leaf_thetas=leaf_thetas)
 
-        rot_mats = rot_mats.reshape(batch_size * 24, 3, 3)
+        # rot_mats = rot_mats.reshape(batch_size * 24, 3, 3)
         # rot_mats = rotmat_to_quat(rot_mats).reshape(batch_size, 24 * 4)
 
         if transl is not None:
