@@ -253,7 +253,7 @@ def evaluate_3dpw(model,
             # pred_cam_t = out['pred_cam_t'][0, 0, :].cpu().detach().numpy()
             pred_cam_t = torch.stack([pred_cam_wp[0, 1],
                                       pred_cam_wp[0, 2],
-                                      2 * model_cfg.MODEL.FOCAL_LENGTH / (vis_img_wh * pred_cam_wp[0, 0] + 1e-9)], dim=-1).cpu().detach().numpy()
+                                      2 * 5000 / (vis_img_wh * pred_cam_wp[0, 0] + 1e-9)], dim=-1).cpu().detach().numpy()
 
             # Render predicted meshes
             body_vis_rgb_mode = renderer(vertices=pred_vertices[0],

@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 
 def compute_similarity_transform(S1, S2):
