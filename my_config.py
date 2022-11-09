@@ -1,5 +1,5 @@
 # ------------------------------------ Paths ------------------------------------
-SMPL_MODEL_DIR = 'data/body_models/smpl'
+SMPL_MODEL_DIR = 'data/smpl'
 J_REGRESSOR_EXTRA = 'data/J_regressor_extra.npy'
 COCOPLUS_REGRESSOR = 'data/cocoplus_regressor.npy'
 H36M_REGRESSOR = 'data/J_regressor_h36m.npy'
