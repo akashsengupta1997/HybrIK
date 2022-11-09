@@ -620,7 +620,7 @@ if __name__ == '__main__':
     metrics.append('hrnet_joints2D_l2es')
     metrics.append('joints2D_l2es')
 
-    save_path = '/scratch3/as2562/HybIK/evaluations/3dpw'
+    save_path = '/scratch3/as2562/HybrIK/evaluations/3dpw'
     if args.use_subset:
         save_path += '_selected_fnames_occluded_joints'
     if args.extreme_crop:
