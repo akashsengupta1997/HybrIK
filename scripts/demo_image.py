@@ -33,8 +33,8 @@ parser = argparse.ArgumentParser(description='HybrIK Demo')
 
 parser.add_argument('--gpu',
                     help='gpu',
-                    default=0,
-                    type=int)
+                    default="0",
+                    type=str)
 parser.add_argument('--img-dir',
                     help='image folder',
                     default='',
