@@ -281,7 +281,7 @@ def evaluate_3dpw(model,
             # body_vis_rgb_mode = renderer(vertices=pred_vertices[0],
             #                              camera_translation=pred_cam_t.copy(),
             #                              image=vis_img[0])
-            body_vis_rgb_mode = renderer(vertices=pred_vertices[0] + out.transl[0],
+            body_vis_rgb_mode = renderer(vertices=pred_vertices[0] + out.transl[0].cpu().detach().numpy(),
                                          camera_translation=np.zeros_like(pred_cam_t),
                                          image=vis_img[0])
             body_vis_rgb_mode_rot = renderer(vertices=pred_vertices[0],
