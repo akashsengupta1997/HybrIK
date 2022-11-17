@@ -185,6 +185,6 @@ for file in tqdm(files):
             focal_length=rotated_focal, height=image.shape[0], width=image.shape[1])
         print(rotated_color_batch.shape, rotated_color_batch.max(), rotated_color_batch.min())
 
-        rotated_color = (rotated_color_batch[0] * 255).cpu().numpy().astype(np.uint8)
+        rotated_color = (rotated_color_batch[0, :, :, :3] * 255).cpu().numpy().astype(np.uint8)
         rotated_res_path = os.path.join(opt.out_dir, os.path.splitext(basename)[0] + '_rot.png')
         cv2.imwrite(rotated_res_path, rotated_color[:, :, ::-1])
