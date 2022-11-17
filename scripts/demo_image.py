@@ -132,6 +132,7 @@ for file in tqdm(files):
         bbox_xywh = xyxy2xywh(bbox)
 
         focal = focal / 256 * bbox_xywh[2]
+        print('FOCAL', focal)
 
         vertices = pose_output.pred_vertices.detach()
 
