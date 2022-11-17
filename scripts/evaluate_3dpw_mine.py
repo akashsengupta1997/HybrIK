@@ -67,11 +67,11 @@ def evaluate_3dpw(model,
 
     renderer = Renderer(img_res=vis_img_wh, faces=smpl_neutral.faces)
     reposed_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., -0.2]),
-                                                                   focal_length=5000.,
+                                                                   focal_length=1000.,
                                                                    resolution=vis_img_wh)
     if extreme_crop:
         rot_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., 0.]),
-                                                                   focal_length=5000.,
+                                                                   focal_length=1000.,
                                                                    resolution=vis_img_wh)
 
     model.eval()
