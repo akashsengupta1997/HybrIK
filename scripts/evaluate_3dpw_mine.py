@@ -67,11 +67,11 @@ def evaluate_3dpw(model,
 
     renderer = Renderer(focal_length=1000., img_res=vis_img_wh, faces=smpl_neutral.faces)
     reposed_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., -0.2]),
-                                                                   focal_length=5000.,
+                                                                   focal_length=1000.,
                                                                    resolution=vis_img_wh)
     if extreme_crop:
         rot_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., 0.]),
-                                                                   focal_length=5000.,
+                                                                   focal_length=1000.,
                                                                    resolution=vis_img_wh)
 
     model.eval()
@@ -278,28 +278,30 @@ def evaluate_3dpw(model,
                                       2 * 5000 / (vis_img_wh * pred_cam_wp[0, 0] + 1e-9)], dim=-1).cpu().detach().numpy()
 
             # Render predicted meshes
-            # body_vis_rgb_mode = renderer(vertices=pred_vertices[0],
+            # body_vis_rgb = renderer(vertices=pred_vertices[0],
             #                              camera_translation=pred_cam_t.copy(),
             #                              image=vis_img[0])
-            body_vis_rgb_mode = renderer(vertices=pred_vertices[0] + out.transl[0].cpu().detach().numpy(),
-                                         camera_translation=np.zeros_like(pred_cam_t),
-                                         image=vis_img[0])
-            body_vis_rgb_mode_rot = renderer(vertices=pred_vertices[0],
-                                             camera_translation=pred_cam_t.copy() if not extreme_crop else rot_cam_t.copy(),
-                                             image=np.zeros_like(vis_img[0]),
-                                             angle=np.pi / 2.,
-                                             axis=[0., 1., 0.])
+            transl = out.transl[0].cpu().detach().numpy()
+            transl[1] *= -1
+            body_vis_rgb = renderer(vertices=pred_vertices[0] + transl,
+                                    camera_translation=np.zeros_like(pred_cam_t),
+                                    image=vis_img[0])
+            body_vis_rgb_rot = renderer(vertices=pred_vertices[0],
+                                        camera_translation=pred_cam_t.copy() if not extreme_crop else rot_cam_t.copy(),
+                                        image=np.zeros_like(vis_img[0]),
+                                        angle=np.pi / 2.,
+                                        axis=[0., 1., 0.])
 
-            reposed_body_vis_rgb_mean = renderer(vertices=pred_reposed_vertices[0],
-                                                 camera_translation=reposed_cam_t.copy(),
-                                                 image=np.zeros_like(vis_img[0]),
-                                                 flip_updown=False)
-            reposed_body_vis_rgb_mean_rot = renderer(vertices=pred_reposed_vertices[0],
-                                                     camera_translation=reposed_cam_t.copy(),
-                                                     image=np.zeros_like(vis_img[0]),
-                                                     angle=np.pi / 2.,
-                                                     axis=[0., 1., 0.],
-                                                     flip_updown=False)
+            reposed_body_vis_rgb = renderer(vertices=pred_reposed_vertices[0],
+                                            camera_translation=reposed_cam_t.copy(),
+                                            image=np.zeros_like(vis_img[0]),
+                                            flip_updown=False)
+            reposed_body_vis_rgb_rot = renderer(vertices=pred_reposed_vertices[0],
+                                                camera_translation=reposed_cam_t.copy(),
+                                                image=np.zeros_like(vis_img[0]),
+                                                angle=np.pi / 2.,
+                                                axis=[0., 1., 0.],
+                                                flip_updown=False)
 
             # ------------------ Model Prediction, Error and Uncertainty Figure ------------------
             num_row = 6
@@ -342,23 +344,23 @@ def evaluate_3dpw(model,
             # Plot body render overlaid on vis image
             plt.subplot(num_row, num_col, subplot_count)
             plt.gca().axis('off')
-            plt.imshow(body_vis_rgb_mode)
+            plt.imshow(body_vis_rgb)
             subplot_count += 1
 
             plt.subplot(num_row, num_col, subplot_count)
             plt.gca().axis('off')
-            plt.imshow(body_vis_rgb_mode_rot)
+            plt.imshow(body_vis_rgb_rot)
             subplot_count += 1
 
             # Plot reposed body render
             plt.subplot(num_row, num_col, subplot_count)
             plt.gca().axis('off')
-            plt.imshow(reposed_body_vis_rgb_mean)
+            plt.imshow(reposed_body_vis_rgb)
             subplot_count += 1
 
             plt.subplot(num_row, num_col, subplot_count)
             plt.gca().axis('off')
-            plt.imshow(reposed_body_vis_rgb_mean_rot)
+            plt.imshow(reposed_body_vis_rgb_rot)
             subplot_count += 1
 
             if 'pves_sc' in metrics_to_track:
