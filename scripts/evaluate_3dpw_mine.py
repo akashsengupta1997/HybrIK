@@ -32,7 +32,7 @@ def evaluate_3dpw(model,
                   save_path,
                   num_workers=4,
                   pin_memory=True,
-                  vis_img_wh=512,
+                  vis_img_wh=256,
                   vis_every_n_batches=1000,
                   extreme_crop=False):
     eval_dataloader = DataLoader(eval_dataset,
@@ -67,11 +67,11 @@ def evaluate_3dpw(model,
 
     renderer = Renderer(img_res=vis_img_wh, faces=smpl_neutral.faces)
     reposed_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., -0.2]),
-                                                                   focal_length=5000.,
+                                                                   focal_length=1000.,
                                                                    resolution=vis_img_wh)
     if extreme_crop:
         rot_cam_t = convert_weak_perspective_to_camera_translation(cam_wp=np.array([0.85, 0., 0.]),
-                                                                   focal_length=5000.,
+                                                                   focal_length=1000.,
                                                                    resolution=vis_img_wh)
 
     model.eval()
@@ -615,7 +615,7 @@ if __name__ == '__main__':
                               gt_visible_joints_threhshold=0.6,
                               extreme_crop=args.extreme_crop,
                               extreme_crop_scale=args.extreme_crop_scale,
-                              vis_img_wh=512)
+                              vis_img_wh=256)
     print("Eval examples found:", len(dataset))
 
     # Metrics
@@ -642,6 +642,6 @@ if __name__ == '__main__':
                   num_workers=4,
                   pin_memory=True,
                   vis_every_n_batches=vis_every_n_batches,
-                  vis_img_wh=512,
+                  vis_img_wh=256,
                   extreme_crop=args.extreme_crop)
 
