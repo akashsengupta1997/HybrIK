@@ -73,7 +73,8 @@ def render_mesh(vertices, faces, translation, focal_length, height, width, devic
             device=device,
             cameras=cameras,
             lights=lights,
-            materials=materials
+            materials=materials,
+            blend_params=pytorch3d.renderer.BlendParams(background_color=(0.0, 0.0, 0.0))
         )
     )
 
