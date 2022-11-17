@@ -278,8 +278,11 @@ def evaluate_3dpw(model,
                                       2 * 5000 / (vis_img_wh * pred_cam_wp[0, 0] + 1e-9)], dim=-1).cpu().detach().numpy()
 
             # Render predicted meshes
-            body_vis_rgb_mode = renderer(vertices=pred_vertices[0],
-                                         camera_translation=pred_cam_t.copy(),
+            # body_vis_rgb_mode = renderer(vertices=pred_vertices[0],
+            #                              camera_translation=pred_cam_t.copy(),
+            #                              image=vis_img[0])
+            body_vis_rgb_mode = renderer(vertices=pred_vertices[0] + out.transl[0],
+                                         camera_translation=np.zeros_like(pred_cam_t),
                                          image=vis_img[0])
             body_vis_rgb_mode_rot = renderer(vertices=pred_vertices[0],
                                              camera_translation=pred_cam_t.copy() if not extreme_crop else rot_cam_t.copy(),
