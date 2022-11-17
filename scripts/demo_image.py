@@ -117,7 +117,7 @@ for file in tqdm(files):
 
         # Run Detection
         input_image = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
-        det_input = det_transform(input_image).to(opt.gpu)
+        det_input = det_transform(input_image).to(device)
         det_output = det_model([det_input])[0]
 
         tight_bbox = get_one_box(det_output)  # xyxy
@@ -126,7 +126,7 @@ for file in tqdm(files):
         # bbox: [x1, y1, x2, y2]
         pose_input, bbox, img_center = transformation.test_transform(
             input_image, tight_bbox)
-        pose_input = pose_input.to(opt.gpu)[None, :, :, :]
+        pose_input = pose_input.to(device)[None, :, :, :]
         pose_output = hybrik_model(
             pose_input, flip_test=True,
             bboxes=torch.from_numpy(np.array(bbox)).to(pose_input.device).unsqueeze(0).float(),
