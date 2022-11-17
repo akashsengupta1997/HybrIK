@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from torch.nn import functional as F
-
+from pytorch3d.transforms.so3 import so3_exponential_map
 """
 Useful geometric operations, e.g. Perspective projection and a differentiable Rodrigues formula
 Parts of the code are taken from https://github.com/MandyMo/pytorch_HMR
@@ -746,3 +746,21 @@ def euler_angles_from_rotmat(R):
             x_angle = -z_angle + torch.atan2(-R[:, 0, 1], R[:, 0, 2])
         s = ((x_angle, y_angle, z_angle),)
     return s
+
+def aa_rotate_translate_points_pytorch3d(points, axes, angles, translations):
+    """
+    Rotates and translates batch of points from a mesh.
+    :param points: B, N, 3, batch of meshes with N points each
+    :param axes: (B,3) or (3,), rotation axes
+    :param angles: (B,1) or scalar, rotation angles in radians
+    :param translations: (B,3) or (3,), translation vectors
+    :return:
+    """
+    r = axes * angles
+    if r.dim() < 2:
+        r = r[None, :].expand(points.shape[0], -1)
+    R = so3_exponential_map(log_rot=r)  # (B, 3, 3)
+    points = torch.einsum('bij,bkj->bki', R, points)
+    points = points + translations
+
+    return points

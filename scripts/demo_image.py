@@ -11,6 +11,7 @@ from hybrik.utils.config import update_config
 from hybrik.utils.presets import SimpleTransform3DSMPLCam
 from hybrik.utils.render_pytorch3d import render_mesh
 from hybrik.utils.vis import get_one_box
+from hybrik.utils.geometry import aa_rotate_translate_points_pytorch3d
 from torchvision import transforms as T
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from tqdm import tqdm
@@ -42,6 +43,9 @@ parser.add_argument('--out-dir',
                     help='output folder',
                     default='',
                     type=str)
+parser.add_argument('--zoom_out_rot_view',
+                    '-Z',
+                    action='store_true')
 opt = parser.parse_args()
 
 
@@ -84,8 +88,13 @@ if type(save_dict) == dict:
 else:
     hybrik_model.load_state_dict(save_dict)
 
-det_model.cuda(opt.gpu)
-hybrik_model.cuda(opt.gpu)
+# Device
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"] = opt.gpu
+device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+
+det_model.to(device)
+hybrik_model.to(device)
 det_model.eval()
 hybrik_model.eval()
 
@@ -153,10 +162,29 @@ for file in tqdm(files):
         input_img = image
         alpha = 0.9
         image_vis = alpha * color[:, :, :3] * valid_mask + (
-            1 - alpha) * input_img * valid_mask + (1 - valid_mask) * input_img
+                1 - alpha) * input_img * valid_mask + (1 - valid_mask) * input_img
 
         image_vis = image_vis.astype(np.uint8)
         image_vis = cv2.cvtColor(image_vis, cv2.COLOR_RGB2BGR)
 
         res_path = os.path.join(opt.out_dir, basename)
         cv2.imwrite(res_path, image_vis)
+
+        rotated_vertices = aa_rotate_translate_points_pytorch3d(points=vertices,
+                                                                axes=torch.tensor([0., 1., 0.], device=device),
+                                                                angles=-np.pi / 2.,
+                                                                translations=torch.zeros(3, device=device))
+        if opt.zoom_out_rot_view:
+            rotated_focal = focal / 2.
+        else:
+            rotated_focal = focal
+
+        rotated_color_batch = render_mesh(
+            vertices=rotated_vertices, faces=smpl_faces,
+            translation=transl_batch,
+            focal_length=rotated_focal, height=image.shape[0], width=image.shape[1])
+        print(rotated_color_batch.shape, rotated_color_batch.max(), rotated_color_batch.min())
+
+        rotated_color = (rotated_color_batch[0] * 255).cpu().numpy().astype(np.uint8)
+        rotated_res_path = os.path.join(opt.out_dir, os.path.splitext(basename)[0] + '_rot.png')
+        cv2.imwrite(rotated_res_path, rotated_color[:, :, ::-1])
